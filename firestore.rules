@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Medications Collection
+    // Users can only access their own medications
+    match /medications/{medicationId} {
+      // Users can only read their own medications
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // Users can only create medications for themselves
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+      
+      // Users can only update/delete their own medications
+      allow update, delete: if request.auth != null && 
+                               request.auth.uid == resource.data.userId;
+    }
+    
+    // Hospital Visits Collection
+    // Users can only access their own hospital visits
+    match /hospital_visits/{visitId} {
+      // Users can only read their own visits
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      
+      // Users can only create visits for themselves
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+      
+      // Users can only update/delete their own visits
+      allow update, delete: if request.auth != null && 
+                               request.auth.uid == resource.data.userId;
+    }
+    
+    // User Profiles Collection (optional - for future features)
+    // Users can only access their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Symptom Checks History (optional - for storing symptom check history)
+    match /symptom_checks/{checkId} {
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+    }
+    
+    // Chat History Collection (optional - for storing AI chat conversations)
+    match /chat_history/{chatId} {
+      allow read: if request.auth != null && 
+                     request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && 
+                       request.auth.uid == request.resource.data.userId;
+    }
+  }
+}
+
