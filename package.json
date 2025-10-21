@@ -1,0 +1,30 @@
+{
+  "name": "cliniccompass",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-powered healthcare guidance and clinic finder for underserved communities",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "firebase": "^10.7.0",
+    "openai": "^4.20.0",
+    "lucide-react": "^0.294.0",
+    "date-fns": "^2.30.0",
+    "axios": "^1.6.0",
+    "react-speech-recognition": "^3.10.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "vite": "^5.0.0"
+  }
+}
+
