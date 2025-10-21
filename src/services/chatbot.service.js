@@ -79,11 +79,61 @@ ${contextInfo}`;
     return response.choices[0].message.content;
   } catch (error) {
     console.error('Error in chatbot:', error);
+    
+    // If it's a rate limit error (429), provide demo response
+    if (error.status === 429 || error.message?.includes('429') || error.message?.includes('quota')) {
+      console.warn('⚠️ OpenAI quota exceeded. Using demo chatbot response.');
+      return getDemoChatResponse(message, context);
+    }
+    
     throw new Error(language === 'es'
       ? 'No pude responder. Por favor intenta de nuevo.'
       : 'Could not respond. Please try again.'
     );
   }
+}
+
+/**
+ * Provides demo chatbot responses when OpenAI API is unavailable
+ */
+function getDemoChatResponse(message, context) {
+  const { medications = [], visits = [], language = 'en' } = context;
+  const messageLower = message.toLowerCase();
+  
+  // Medication questions
+  if (messageLower.includes('side effect') || messageLower.includes('efecto') || messageLower.includes('secundario')) {
+    if (medications.length > 0) {
+      return language === 'es'
+        ? `🤖 MODO DEMO: Estás tomando ${medications[0].name}. Los efectos secundarios comunes pueden incluir náuseas, mareos o dolor de cabeza. Si experimentas efectos secundarios graves, contacta a tu médico. Nota: Esta es una respuesta de demostración ya que tu límite de OpenAI se ha excedido.`
+        : `🤖 DEMO MODE: You're taking ${medications[0].name}. Common side effects may include nausea, dizziness, or headache. If you experience severe side effects, contact your doctor. Note: This is a demo response as your OpenAI quota has been exceeded.`;
+    }
+  }
+  
+  // Next visit questions
+  if (messageLower.includes('next visit') || messageLower.includes('appointment') || messageLower.includes('próxima') || messageLower.includes('cita')) {
+    if (visits.length > 0) {
+      const nextVisit = visits[0];
+      return language === 'es'
+        ? `🤖 MODO DEMO: Tu próxima visita es con ${nextVisit.doctorName} en ${nextVisit.hospital} el ${nextVisit.date}. Recuerda llevar tu identificación, tarjeta de seguro y lista de medicamentos. Nota: Esta es una respuesta de demostración.`
+        : `🤖 DEMO MODE: Your next visit is with ${nextVisit.doctorName} at ${nextVisit.hospital} on ${nextVisit.date}. Remember to bring your ID, insurance card, and medication list. Note: This is a demo response.`;
+    } else {
+      return language === 'es'
+        ? `🤖 MODO DEMO: No tienes visitas programadas actualmente. Puedes agregar una en la sección "Hospital Visits". Nota: Esta es una respuesta de demostración.`
+        : `🤖 DEMO MODE: You don't have any visits scheduled currently. You can add one in the "Hospital Visits" section. Note: This is a demo response.`;
+    }
+  }
+  
+  // Drug interaction questions
+  if (messageLower.includes('together') || messageLower.includes('interact') || messageLower.includes('juntas') || messageLower.includes('interacción')) {
+    return language === 'es'
+      ? `🤖 MODO DEMO: Es importante consultar con tu médico o farmacéutico sobre posibles interacciones entre medicamentos. Ellos pueden revisar todas tus medicinas y darte consejos personalizados. Nota: Esta es una respuesta de demostración ya que tu límite de OpenAI se ha excedido.`
+      : `🤖 DEMO MODE: It's important to check with your doctor or pharmacist about possible drug interactions. They can review all your medications and give you personalized advice. Note: This is a demo response as your OpenAI quota has been exceeded.`;
+  }
+  
+  // Default response
+  return language === 'es'
+    ? `🤖 MODO DEMO: Hola! Soy tu asistente de salud. Puedo ayudarte con preguntas sobre medicinas, citas médicas y consejos generales de salud. Recuerda que no soy un doctor real. Para emergencias, llama al 911. Nota: Esta es una respuesta de demostración ya que tu límite de OpenAI se ha excedido. Para usar el chatbot completo con IA, agrega créditos a tu cuenta de OpenAI.`
+    : `🤖 DEMO MODE: Hi! I'm your health assistant. I can help with questions about medications, appointments, and general health advice. Remember, I'm not a real doctor. For emergencies, call 911. Note: This is a demo response as your OpenAI quota has been exceeded. To use the full AI chatbot, add credits to your OpenAI account.`;
 }
 
 /**

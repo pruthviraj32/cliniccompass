@@ -7,7 +7,6 @@ import {
   query, 
   where, 
   getDocs,
-  orderBy,
   Timestamp 
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -41,8 +40,7 @@ export async function getHospitalVisits(userId) {
   try {
     const q = query(
       collection(db, 'hospital_visits'),
-      where('userId', '==', userId),
-      orderBy('date', 'desc')
+      where('userId', '==', userId)
     );
     
     const querySnapshot = await getDocs(q);
@@ -50,6 +48,9 @@ export async function getHospitalVisits(userId) {
       id: doc.id,
       ...doc.data()
     }));
+
+    // Sort by date (client-side)
+    visits.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // Separate into upcoming and past
     const now = new Date();

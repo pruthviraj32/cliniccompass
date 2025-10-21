@@ -437,15 +437,22 @@ netlify deploy --prod
 
 ### Development (FREE)
 - Firebase: Free tier (generous limits)
-- OpenAI: $5 free credit (~2,500 requests)
+- OpenAI: $5 free credit (~2,500 requests) or **use built-in Demo Mode**
 - Vercel/Netlify: Free hosting
 - **Total: $0** ✅
 
 ### Production (100 users/month)
 - Firebase: Free tier sufficient
-- OpenAI: ~$10/month
+- OpenAI: ~$10/month (optional - demo mode available)
 - Hosting: Free
 - **Total: ~$10/month**
+
+### 🤖 Demo Mode
+If your OpenAI credits run out, the app automatically switches to **Demo Mode**:
+- ✅ Symptom checker still works with smart keyword-based triage
+- ✅ Chatbot provides helpful canned responses
+- ✅ All other features (medications, visits, clinics) work perfectly
+- ✅ Great for testing and demos!
 
 ---
 

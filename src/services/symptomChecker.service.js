@@ -74,10 +74,77 @@ Respond in JSON: {"severity": "home/clinic/emergency", "explanation": "...", "ad
     return result;
   } catch (error) {
     console.error('Error analyzing symptoms:', error);
+    
+    // If it's a rate limit error (429), provide demo response
+    if (error.status === 429 || error.message?.includes('429') || error.message?.includes('quota')) {
+      console.warn('⚠️ OpenAI quota exceeded. Using demo mode.');
+      return getDemoResponse(symptoms, language);
+    }
+    
     throw new Error(language === 'es' 
       ? 'No pudimos analizar los síntomas. Por favor intenta de nuevo.'
       : 'Could not analyze symptoms. Please try again.'
     );
+  }
+}
+
+/**
+ * Provides a demo response when OpenAI API is unavailable
+ * This allows testing the app without API credits
+ */
+function getDemoResponse(symptoms, language) {
+  const symptomsLower = symptoms.toLowerCase();
+  
+  // Emergency keywords
+  const emergencyKeywords = ['chest pain', 'can\'t breathe', 'breathing', 'unconscious', 'severe bleeding', 'stroke', 'heart attack', 'dolor de pecho', 'no puedo respirar', 'sangrado severo'];
+  const isEmergency = emergencyKeywords.some(keyword => symptomsLower.includes(keyword));
+  
+  // Clinic keywords
+  const clinicKeywords = ['fever', 'pain', 'infection', 'cough', 'vomit', 'fiebre', 'dolor', 'infección', 'tos', 'vómito'];
+  const needsClinic = clinicKeywords.some(keyword => symptomsLower.includes(keyword));
+  
+  if (isEmergency) {
+    return {
+      severity: 'emergency',
+      explanation: language === 'es'
+        ? '⚠️ Tus síntomas podrían ser graves. Es importante buscar atención médica de emergencia inmediatamente.'
+        : '⚠️ Your symptoms could be serious. It\'s important to seek emergency medical attention immediately.',
+      advice: language === 'es'
+        ? 'Ve a la sala de emergencias ahora o llama al 911.'
+        : 'Go to the emergency room now or call 911.',
+      disclaimer: language === 'es'
+        ? '🤖 MODO DEMO: Esta es una respuesta de demostración. Tu límite de OpenAI se ha excedido. Nota: Esta no es un consejo médico profesional.'
+        : '🤖 DEMO MODE: This is a demo response. Your OpenAI quota has been exceeded. Note: This is not professional medical advice.',
+      isDemo: true
+    };
+  } else if (needsClinic) {
+    return {
+      severity: 'clinic',
+      explanation: language === 'es'
+        ? 'Basado en tus síntomas, sería bueno que visites una clínica para una evaluación profesional.'
+        : 'Based on your symptoms, it would be good to visit a clinic for a professional evaluation.',
+      advice: language === 'es'
+        ? 'Programa una cita con un médico en los próximos días. Mientras tanto, descansa y mantente hidratado.'
+        : 'Schedule an appointment with a doctor in the next few days. Meanwhile, rest and stay hydrated.',
+      disclaimer: language === 'es'
+        ? '🤖 MODO DEMO: Esta es una respuesta de demostración. Tu límite de OpenAI se ha excedido. Nota: Esta no es un consejo médico profesional.'
+        : '🤖 DEMO MODE: This is a demo response. Your OpenAI quota has been exceeded. Note: This is not professional medical advice.',
+      isDemo: true
+    };
+  } else {
+    return {
+      severity: 'home',
+      explanation: language === 'es'
+        ? 'Tus síntomas parecen leves. Puedes cuidarte en casa con reposo.'
+        : 'Your symptoms seem mild. You can take care of yourself at home with rest.',
+      advice: language === 'es'
+        ? 'Descansa, toma líquidos, y monitorea tus síntomas. Si empeoran, consulta a un médico.'
+        : 'Rest, drink fluids, and monitor your symptoms. If they worsen, consult a doctor.',
+      disclaimer: language === 'es'
+        ? '🤖 MODO DEMO: Esta es una respuesta de demostración. Tu límite de OpenAI se ha excedido. Nota: Esta no es un consejo médico profesional.'
+        : '🤖 DEMO MODE: This is a demo response. Your OpenAI quota has been exceeded. Note: This is not professional medical advice.',
+      isDemo: true
+    };
   }
 }
 

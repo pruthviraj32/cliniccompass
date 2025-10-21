@@ -7,7 +7,6 @@ import {
   query, 
   where, 
   getDocs,
-  orderBy,
   Timestamp 
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -41,16 +40,19 @@ export async function getMedications(userId) {
   try {
     const q = query(
       collection(db, 'medications'),
-      where('userId', '==', userId),
-      where('active', '==', true),
-      orderBy('createdAt', 'desc')
+      where('userId', '==', userId)
     );
     
     const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
+    const medications = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
+    
+    // Filter active medications and sort by creation date (client-side)
+    return medications
+      .filter(med => med.active === true)
+      .sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
   } catch (error) {
     console.error('Error getting medications:', error);
     throw error;
