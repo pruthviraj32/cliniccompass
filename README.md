@@ -534,7 +534,7 @@ Special thanks to:
 - Email: pruthviraj.p@icloud.com
   
 
-**Project Link:** [https://github.com/yourusername/cliniccompass](https://github.com/pruthviraj32/cliniccompass)
+**Project Link:** [https://github.com/pruthviraj32/cliniccompass](https://github.com/pruthviraj32/cliniccompass)
 
 ---
 
