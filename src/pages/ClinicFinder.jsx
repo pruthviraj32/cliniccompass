@@ -9,6 +9,8 @@ export default function ClinicFinder() {
   const [clinics, setClinics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all');
+  const [locationError, setLocationError] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     handleSearch();
@@ -16,11 +18,13 @@ export default function ClinicFinder() {
 
   async function handleSearch() {
     setLoading(true);
+    setLocationError(false);
     try {
       const results = await findNearbyClinics(null, filter);
       setClinics(results);
     } catch (error) {
       console.error('Error finding clinics:', error);
+      setLocationError(true);
     } finally {
       setLoading(false);
     }
@@ -48,6 +52,23 @@ export default function ClinicFinder() {
               ? 'Encuentra clínicas gratis o de bajo costo cerca de ti'
               : 'Find free or low-cost clinics near you'}
           </p>
+        </div>
+
+        {/* Location info banner */}
+        <div className="card bg-blue-50 border border-blue-200 mb-6">
+          <div className="flex items-start gap-3">
+            <MapPin className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                {language === 'es' ? '📍 Usando tu ubicación' : '📍 Using Your Location'}
+              </h3>
+              <p className="text-base text-gray-700">
+                {language === 'es' 
+                  ? 'Necesitamos tu permiso para encontrar clínicas cerca de ti. Haz clic en "Permitir" cuando tu navegador lo solicite.'
+                  : 'We need your permission to find clinics near you. Click "Allow" when your browser asks for location access.'}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Filter */}
