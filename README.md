@@ -529,13 +529,12 @@ Special thanks to:
 
 ## 📧 Contact
 
-**Project Maintainer:** Your Name
+**Project Maintainer:** Pruthviraj Prakash
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-- Twitter: [@yourhandle](https://twitter.com/yourhandle)
+- Email: pruthviraj.p@icloud.com
+  
 
-**Project Link:** [https://github.com/yourusername/cliniccompass](https://github.com/yourusername/cliniccompass)
+**Project Link:** [https://github.com/pruthviraj32/cliniccompass](https://github.com/pruthviraj32/cliniccompass)
 
 ---
 
